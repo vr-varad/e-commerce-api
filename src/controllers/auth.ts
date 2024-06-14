@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { prismaClient } from "..";
 import { hashSync, compareSync } from "bcrypt";
 import * as jwt from "jsonwebtoken";
@@ -7,11 +7,15 @@ import { BadRequestException } from "../expections/bad_request";
 import { ErrorCode } from "../expections/root";
 import { SignUpSchema } from "../schemas/user";
 import { NotFoundError } from "../expections/notFound";
+import { User } from "@prisma/client";
 
-export const signUp = async (
-  req: Request,
-  res: Response
-) => {
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: User;
+  }
+}
+
+export const signUp = async (req: Request, res: Response) => {
   SignUpSchema.parse(req.body);
   const { name, email, password } = req.body;
   let user = await prismaClient.user.findFirst({
@@ -63,4 +67,8 @@ export const login = async (req: Request, res: Response) => {
     JWT_SECRET
   );
   return res.json({ user, token });
+};
+
+export const me = async(req: Request, res: Response) => {
+  return res.json(req.user);
 };
