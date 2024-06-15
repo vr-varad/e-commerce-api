@@ -21,5 +21,6 @@ export enum ErrorCode {
     INVALID_DATA = 2001,
     INTERAL_SERVER_ERROR = 3001,
     UNAUTHORIZED_USER = 4001,
+    PRODUCT_NOT_FOUND = 5001,
 
 }

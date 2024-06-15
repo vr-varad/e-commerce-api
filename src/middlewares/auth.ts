@@ -5,6 +5,14 @@ import { ErrorCode } from "../expections/root";
 import { JWT_SECRET } from "../secrets";
 import { prismaClient } from "..";
 import { NotFoundError } from "../expections/notFound";
+import { User } from "@prisma/client";
+
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: User;
+  }
+}
+
 
 const authMiddleware = async (
   req: Request,

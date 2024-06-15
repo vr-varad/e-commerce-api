@@ -4,6 +4,7 @@ import rootRouter from "./routes";
 import { PrismaClient } from "@prisma/client";
 import { ErrorMiddleware } from "./middlewares/errors";
 import { SignUpSchema } from "./schemas/user";
+import { ProductSchema } from "./schemas/product";
 
 const app: Express = express();
 
@@ -21,8 +22,15 @@ export const prismaClient = new PrismaClient({
         return query(args);
       },
     },
+    product: {
+      create: ({ args, query }) => {
+        args.data = ProductSchema.parse(args.data);
+        return query(args);
+      },
+    },
   },
 });
+
 
 app.use(ErrorMiddleware);
 

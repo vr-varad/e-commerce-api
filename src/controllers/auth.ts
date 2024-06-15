@@ -9,11 +9,6 @@ import { SignUpSchema } from "../schemas/user";
 import { NotFoundError } from "../expections/notFound";
 import { User } from "@prisma/client";
 
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: User;
-  }
-}
 
 export const signUp = async (req: Request, res: Response) => {
   SignUpSchema.parse(req.body);
@@ -64,7 +59,8 @@ export const login = async (req: Request, res: Response) => {
     {
       userId: user.id,
     },
-    JWT_SECRET
+    JWT_SECRET,
+    {expiresIn: '1d'}
   );
   return res.json({ user, token });
 };
