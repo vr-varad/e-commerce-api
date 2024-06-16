@@ -29,6 +29,22 @@ export const prismaClient = new PrismaClient({
       },
     },
   },
+  result : {
+    address : {
+      formatedAddress : {
+        needs : {
+          lineOne: true,
+          lineTwo: true,
+          city: true,
+          country: true,
+          pincode: true,
+        },
+        compute : (address)=>{
+          return `${address.lineOne}, ${address.lineTwo}, ${address.city}, ${address.country}, ${address.pincode}`
+        }
+      }
+    }
+  }
 });
 
 

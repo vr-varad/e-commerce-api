@@ -42,7 +42,7 @@ export const listAddress = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   const validatedData = UpdateUserSchema.parse(req.body);
-  const user : User | any = req.user
+  const user: User | any = req.user;
   let shippingAddress: Address;
   let billingAddress: Address;
   if (validatedData.defaultShippingAddress) {
@@ -52,8 +52,11 @@ export const updateUser = async (req: Request, res: Response) => {
           id: req.body.defaultShippingAddress,
         },
       });
-      if(shippingAddress.userId != user.id){
-        throw new BadRequestException("Shipping Address Does not Belong to the use", ErrorCode.ADDRESS_NOT_BELONG_TO_USER)
+      if (shippingAddress.userId != user.id) {
+        throw new BadRequestException(
+          "Shipping Address Does not Belong to the use",
+          ErrorCode.ADDRESS_NOT_BELONG_TO_USER
+        );
       }
     } catch (error) {
       throw new NotFoundError("Address Not Found", ErrorCode.ADDRESS_NOT_FOUND);
@@ -66,8 +69,11 @@ export const updateUser = async (req: Request, res: Response) => {
           id: req.body.defaultBillingAddress,
         },
       });
-      if(billingAddress.userId != user.id){
-        throw new BadRequestException("Billing Address Does not Belong to the use", ErrorCode.ADDRESS_NOT_BELONG_TO_USER)
+      if (billingAddress.userId != user.id) {
+        throw new BadRequestException(
+          "Billing Address Does not Belong to the use",
+          ErrorCode.ADDRESS_NOT_BELONG_TO_USER
+        );
       }
     } catch (error) {
       throw new NotFoundError("Address Not Found", ErrorCode.ADDRESS_NOT_FOUND);
@@ -76,9 +82,50 @@ export const updateUser = async (req: Request, res: Response) => {
 
   const updateUser = await prismaClient.user.update({
     where: {
-        id: user.id
+      id: user.id,
     },
-    data : req.body
-  })
-  return res.json(updateUser)
+    data: req.body,
+  });
+  return res.json(updateUser);
+};
+
+export const listUsers = async (req: Request, res: Response) => {
+  const users = await prismaClient.user.findMany({
+    skip: +req.query.skip! || 0,
+    take: 5,
+  });
+
+  return res.json(users);
+};
+
+export const getUserById = async (req: Request, res: Response) => {
+  try {
+    const user = await prismaClient.user.findFirstOrThrow({
+      where: {
+        id: +req.params.id,
+      },
+      include: {
+        addresses: true,
+      },
+    });
+    return res.json(user);
+  } catch (error) {
+    throw new NotFoundError("User Not Found", ErrorCode.USER_NOT_FOUND);
+  }
+};
+
+export const changeRole = async (req: Request, res: Response) => {
+  try {
+    const user = await prismaClient.user.update({
+      where: {
+        id: +req.params.id,
+      },
+      data : {
+        role : req.body.role
+      }
+    });
+    return res.json(user);
+  } catch (error) {
+    throw new NotFoundError("User Not Found", ErrorCode.USER_NOT_FOUND);
+  }
 };
