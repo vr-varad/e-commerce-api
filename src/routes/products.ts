@@ -5,6 +5,7 @@ import {
   getProductById,
   listProduct,
   updateProduct,
+  searchProducts
 } from "../controllers/products";
 import { errorHandler } from "../errorHandler";
 import authMiddleware from "../middlewares/auth";
