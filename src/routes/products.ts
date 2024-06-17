@@ -4,8 +4,7 @@ import {
   deleteProduct,
   getProductById,
   listProduct,
-  updateProduct,
-  searchProducts
+  updateProduct
 } from "../controllers/products";
 import { errorHandler } from "../errorHandler";
 import authMiddleware from "../middlewares/auth";
